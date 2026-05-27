@@ -1,0 +1,30 @@
+artix-coreutils|OFFICIAL/Base|ArtixTUI minimal coreutils
+busybox|OFFICIAL/Base|BusyBox multi-call binary (coreutils replacement)
+busybox-init|OFFICIAL/Base|BusyBox with init support (minimal init system)
+linux|OFFICIAL/Base|Linux kernel built from source
+mesa|OFFICIAL/Base|Open-source OpenGL/Vulkan graphics drivers
+zlib|OFFICIAL/Base|Compression library
+zstd|OFFICIAL/Base|Fast compression library
+openssl|OFFICIAL/Base|SSL/TLS cryptography library
+glibc|OFFICIAL/Base|GNU C Library (use with caution)
+uutils-coreutils|OFFICIAL/Base|Cross-platform Rust rewrite of GNU coreutils
+librewolf|OFFICIAL/Other|Privacy-focused Firefox fork
+firefox|OFFICIAL/Other|Mozilla Firefox web browser
+ffmpeg|OFFICIAL/Other|Complete multimedia framework
+mpv|OFFICIAL/Other|Video player based on MPlayer/mplayer2
+x264|OFFICIAL/Other|H.264/AVC video encoder
+x265|OFFICIAL/Other|H.265/HEVC video encoder
+libvpx|OFFICIAL/Other|VP8/VP9 video codec
+hyprland|OFFICIAL/Other|Dynamic tiling Wayland compositor
+wlroots|OFFICIAL/Other|Modular Wayland compositor library
+neovim|OFFICIAL/Other|Hyperextensible Vim-based text editor
+git|OFFICIAL/Other|Fast distributed version control system
+btop|OFFICIAL/Other|Resource monitor
+ripgrep|OFFICIAL/Other|Line-oriented search tool
+wine|OFFICIAL/Other|Windows compatibility layer
+dxvk|OFFICIAL/Other|Vulkan-based D3D translation layer
+aom|OFFICIAL/Other|AV1 video codec
+libjxl|OFFICIAL/Other|JPEG-XL image codec
+curl|OFFICIAL/Other|HTTP library and CLI tool
+gnupg|OFFICIAL/Other|GNU Privacy Guard
+alacritty|OFFICIAL/Other|GPU-accelerated terminal emulator
