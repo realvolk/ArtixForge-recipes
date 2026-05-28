@@ -2,8 +2,8 @@
 pkgname=artix-coreutils
 pkgver=1.0.0
 pkgrel=1
-desc="ArtixTUI minimal coreutils — debloated, source-built"
-url="https://github.com/realvolk/ArtixTUI"
+desc="ArtixForge minimal coreutils — debloated, source-built"
+url="https://github.com/realvolk/ArtixForge"
 
 # This recipe builds a minimal set of essential tools from multiple sources.
 # It's not a full coreutils replacement, just the most-used binaries,

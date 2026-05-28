@@ -1,4 +1,4 @@
-artix-coreutils|OFFICIAL/Base|ArtixTUI minimal coreutils
+artix-coreutils|OFFICIAL/Base|ArtixForge minimal coreutils
 busybox|OFFICIAL/Base|BusyBox multi-call binary (coreutils replacement)
 busybox-init|OFFICIAL/Base|BusyBox with init support (minimal init system)
 linux|OFFICIAL/Base|Linux kernel built from source

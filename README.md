@@ -1,6 +1,6 @@
-# ArtixTUI-recipes
+# ArtixForge-recipes
 
-Community recipe repository for ArtixTUI's Power User Mode.
+Community recipe repository for ArtixForge's Power User Mode.
 
 ## Structure
 
