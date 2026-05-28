@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 pkgname=linux-custom
 _major=7
-pkgver=7.0.8
+pkgver=7.0.10
 pkgrel=1
 desc="Linux kernel built from source"
 url="https://kernel.org"
