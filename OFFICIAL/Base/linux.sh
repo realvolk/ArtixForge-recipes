@@ -32,9 +32,11 @@ configure() {
   scripts/config --enable 64BIT
   scripts/config --enable SMP
   scripts/config --enable PCI
+  scripts/config --enable VIRTIO
+  scripts/config --enable VIRTIO_MENU
+  scripts/config --enable VIRTIO_BLK
   scripts/config --enable BLK_DEV_SD
   scripts/config --enable BLK_DEV_NVME
-  scripts/config --enable VIRTIO_BLK
   scripts/config --enable ATA
   scripts/config --enable SATA_AHCI
   scripts/config --enable NET
@@ -52,7 +54,6 @@ configure() {
   scripts/config --enable BLOCK
   scripts/config --enable MODULES
   scripts/config --enable MODULE_UNLOAD
-  scripts/config --enable VIRTIO_BLK
 
   for feat in "${selected_features[@]}"; do
     case "${feat}" in
