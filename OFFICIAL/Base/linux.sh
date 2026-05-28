@@ -102,7 +102,7 @@ configure() {
   scripts/config --enable VIRTIO_PCI
   scripts/config --module VIRTIO_BLK
 
-  make olddefconfig
+  make oldconfig
 }
 
 build() {
