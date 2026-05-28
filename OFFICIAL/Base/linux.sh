@@ -94,6 +94,11 @@ configure() {
     make menuconfig
   fi
 
+  scripts/config --enable VIRTIO
+  scripts/config --enable VIRTIO_MENU
+  scripts/config --enable VIRTIO_PCI
+  scripts/config --enable VIRTIO_BLK
+
   make olddefconfig
 }
 
