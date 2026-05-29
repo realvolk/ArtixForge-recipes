@@ -27,86 +27,157 @@ prepare() {
 configure() {
   cd "${BUILD_DIR}/src"
 
-  make allnoconfig
-
-  scripts/config --enable 64BIT
-  scripts/config --enable SMP
-  scripts/config --enable BLOCK
-  scripts/config --enable BLK_DEV
-  scripts/config --enable PCI
-  scripts/config --enable VIRTIO
-  scripts/config --enable VIRTIO_MENU
-  scripts/config --enable VIRTIO_PCI
-  scripts/config --module VIRTIO_BLK
-  scripts/config --module USB_HID
-  scripts/config --enable BLK_DEV_SD
-  scripts/config --enable BLK_DEV_NVME
-  scripts/config --enable ATA
-  scripts/config --enable SATA_AHCI
-  scripts/config --enable NET
-  scripts/config --enable INET
-  scripts/config --enable PACKET
-  scripts/config --enable TTY
-  scripts/config --enable VT
-  scripts/config --enable UNIX98_PTYS
-  scripts/config --enable PROC_FS
-  scripts/config --enable SYSFS
-  scripts/config --enable DEVTMPFS
-  scripts/config --enable TMPFS
-  scripts/config --enable BINFMT_ELF
-  scripts/config --enable PRINTK
-  scripts/config --enable MODULES
-  scripts/config --enable MODULE_UNLOAD
-
-  for feat in "${selected_features[@]}"; do
-    case "${feat}" in
-      nvidia-support)
-        scripts/config --module DRM_NOUVEAU
-        scripts/config --enable DRM_NOUVEAU_BACKLIGHT
-        ;;
-      amd-support)
-        scripts/config --module DRM_AMDGPU
-        scripts/config --enable DRM_AMDGPU_SI
-        scripts/config --enable DRM_AMDGPU_CIK
-        ;;
-    esac
-  done
-
   local depth
-  depth="$(state_get KERNEL_CONFIG_DEPTH auto)"
+  depth="$(state_get KERNEL_CONFIG_DEPTH localmodconfig)"
 
-  if [[ -f "${POWERUSER_DIR}/lib/kconfig.bash" ]]; then
-    source "${POWERUSER_DIR}/lib/kconfig.bash"
-    apply_basic_config
-    apply_advanced_config
-  else
-    log_warn "kconfig.bash not found — kernel may lack hardware drivers"
-  fi
+  case "${depth}" in
+    localmodconfig)
+      make localmodconfig
+      scripts/config --enable EXT4_FS
+      scripts/config --enable BTRFS_FS
+      scripts/config --enable XFS_FS
+      scripts/config --enable F2FS_FS
+      scripts/config --enable EXFAT_FS
+      scripts/config --enable BLK_DEV_SD
+      scripts/config --enable BLK_DEV_NVME
+      scripts/config --enable ATA
+      scripts/config --enable SATA_AHCI
+      ;;
+    menuconfig)
+      make allnoconfig
+      scripts/config --enable 64BIT
+      scripts/config --enable SMP
+      scripts/config --enable BLOCK
+      scripts/config --enable BLK_DEV
+      scripts/config --enable PCI
+      scripts/config --enable VIRTIO
+      scripts/config --enable VIRTIO_MENU
+      scripts/config --enable VIRTIO_PCI
+      scripts/config --module VIRTIO_BLK
+      scripts/config --module USB_HID
+      scripts/config --enable BLK_DEV_SD
+      scripts/config --enable BLK_DEV_NVME
+      scripts/config --enable ATA
+      scripts/config --enable SATA_AHCI
+      scripts/config --enable NET
+      scripts/config --enable INET
+      scripts/config --enable PACKET
+      scripts/config --enable TTY
+      scripts/config --enable VT
+      scripts/config --enable UNIX98_PTYS
+      scripts/config --enable PROC_FS
+      scripts/config --enable SYSFS
+      scripts/config --enable DEVTMPFS
+      scripts/config --enable TMPFS
+      scripts/config --enable BINFMT_ELF
+      scripts/config --enable PRINTK
+      scripts/config --enable MODULES
+      scripts/config --enable MODULE_UNLOAD
+      scripts/config --enable EXT4_FS
 
-  local fs_type
-  fs_type="$(state_get FS_TYPE ext4)"
-  case "${fs_type}" in
-    ext4) scripts/config --enable EXT4_FS ;;
-    btrfs) scripts/config --enable BTRFS_FS ;;
-    xfs) scripts/config --enable XFS_FS ;;
-    f2fs) scripts/config --enable F2FS_FS ;;
-    exfat) scripts/config --enable EXFAT_FS ;;
+      for feat in "${selected_features[@]}"; do
+        case "${feat}" in
+          nvidia-support)
+            scripts/config --module DRM_NOUVEAU
+            scripts/config --enable DRM_NOUVEAU_BACKLIGHT
+            ;;
+          amd-support)
+            scripts/config --module DRM_AMDGPU
+            scripts/config --enable DRM_AMDGPU_SI
+            scripts/config --enable DRM_AMDGPU_CIK
+            ;;
+        esac
+      done
+
+      if [[ -f "${POWERUSER_DIR}/lib/kconfig.bash" ]]; then
+        source "${POWERUSER_DIR}/lib/kconfig.bash"
+        apply_basic_config
+        apply_advanced_config
+      else
+        log_warn "kconfig.bash not found — kernel may lack hardware drivers"
+      fi
+
+      make menuconfig
+      ;;
+
+    *)
+      make allnoconfig
+      scripts/config --enable 64BIT
+      scripts/config --enable SMP
+      scripts/config --enable BLOCK
+      scripts/config --enable BLK_DEV
+      scripts/config --enable PCI
+      scripts/config --enable VIRTIO
+      scripts/config --enable VIRTIO_MENU
+      scripts/config --enable VIRTIO_PCI
+      scripts/config --module VIRTIO_BLK
+      scripts/config --module USB_HID
+      scripts/config --enable BLK_DEV_SD
+      scripts/config --enable BLK_DEV_NVME
+      scripts/config --enable ATA
+      scripts/config --enable SATA_AHCI
+      scripts/config --enable NET
+      scripts/config --enable INET
+      scripts/config --enable PACKET
+      scripts/config --enable TTY
+      scripts/config --enable VT
+      scripts/config --enable UNIX98_PTYS
+      scripts/config --enable PROC_FS
+      scripts/config --enable SYSFS
+      scripts/config --enable DEVTMPFS
+      scripts/config --enable TMPFS
+      scripts/config --enable BINFMT_ELF
+      scripts/config --enable PRINTK
+      scripts/config --enable MODULES
+      scripts/config --enable MODULE_UNLOAD
+
+      for feat in "${selected_features[@]}"; do
+        case "${feat}" in
+          nvidia-support)
+            scripts/config --module DRM_NOUVEAU
+            scripts/config --enable DRM_NOUVEAU_BACKLIGHT
+            ;;
+          amd-support)
+            scripts/config --module DRM_AMDGPU
+            scripts/config --enable DRM_AMDGPU_SI
+            scripts/config --enable DRM_AMDGPU_CIK
+            ;;
+        esac
+      done
+
+      if [[ -f "${POWERUSER_DIR}/lib/kconfig.bash" ]]; then
+        source "${POWERUSER_DIR}/lib/kconfig.bash"
+        apply_basic_config
+        apply_advanced_config
+      else
+        log_warn "kconfig.bash not found — kernel may lack hardware drivers"
+      fi
+
+      local fs_type
+      fs_type="$(state_get FS_TYPE ext4)"
+      case "${fs_type}" in
+        ext4) scripts/config --enable EXT4_FS ;;
+        btrfs) scripts/config --enable BTRFS_FS ;;
+        xfs) scripts/config --enable XFS_FS ;;
+        f2fs) scripts/config --enable F2FS_FS ;;
+        exfat) scripts/config --enable EXFAT_FS ;;
+      esac
+
+      if [[ "${depth}" == "menuconfig" ]]; then
+        make menuconfig
+      fi
+
+      scripts/config --enable BLK_DEV
+      scripts/config --enable VIRTIO
+      scripts/config --enable VIRTIO_MENU
+      scripts/config --enable VIRTIO_PCI
+      scripts/config --module VIRTIO_BLK
+      scripts/config --module USB_HID
+
+      yes "" | make oldconfig
+      ;;
   esac
-
-  if [[ "${depth}" == "menuconfig" ]]; then
-    make menuconfig
-  fi
-
-  scripts/config --enable BLK_DEV
-  scripts/config --enable VIRTIO
-  scripts/config --enable VIRTIO_MENU
-  scripts/config --enable VIRTIO_PCI
-  scripts/config --module VIRTIO_BLK
-  scripts/config --module USB_HID
-
-  yes "" | make oldconfig
 }
-
 build() {
   cd "${BUILD_DIR}/src"
   make -j"${ARTIX_MAKEFLAGS}"
