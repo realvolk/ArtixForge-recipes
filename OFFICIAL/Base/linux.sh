@@ -34,8 +34,6 @@ configure() {
     localmodconfig)
       make localmodconfig
 
-      # Force-enable boot-critical drivers that localmodconfig misses
-      # because the live ISO has them built-in (not as modules)
       if [[ -f "${POWERUSER_DIR}/lib/kconfig.bash" ]]; then
         source "${POWERUSER_DIR}/lib/kconfig.bash"
         ensure_boot_essentials
@@ -76,7 +74,6 @@ configure() {
         bcachefs) scripts/config --enable BCACHEFS_FS ;;
       esac
 
-      # Feature flags
       for feat in "${selected_features[@]}"; do
         case "${feat}" in
           nvidia-support)
@@ -91,7 +88,6 @@ configure() {
         esac
       done
 
-      # Resolve all symbol dependencies
       yes "" | make oldconfig
       ;;
 
