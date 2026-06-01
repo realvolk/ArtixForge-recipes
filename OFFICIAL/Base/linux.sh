@@ -33,16 +33,68 @@ configure() {
   case "${depth}" in
     localmodconfig)
       make localmodconfig
-      scripts/config --enable EXT4_FS
-      scripts/config --enable BTRFS_FS
-      scripts/config --enable XFS_FS
-      scripts/config --enable F2FS_FS
-      scripts/config --enable EXFAT_FS
-      scripts/config --enable BLK_DEV_SD
-      scripts/config --enable BLK_DEV_NVME
-      scripts/config --enable ATA
-      scripts/config --enable SATA_AHCI
+
+      # Force-enable boot-critical drivers that localmodconfig misses
+      # because the live ISO has them built-in (not as modules)
+      if [[ -f "${POWERUSER_DIR}/lib/kconfig.bash" ]]; then
+        source "${POWERUSER_DIR}/lib/kconfig.bash"
+        ensure_boot_essentials
+      else
+        log_warn "kconfig.bash not found — applying minimal boot essentials"
+        scripts/config --enable BLOCK
+        scripts/config --enable BLK_DEV
+        scripts/config --enable VIRTIO
+        scripts/config --enable VIRTIO_MENU
+        scripts/config --enable VIRTIO_PCI
+        scripts/config --enable VIRTIO_BLK
+        scripts/config --enable BLK_DEV_SD
+        scripts/config --enable BLK_DEV_NVME
+        scripts/config --enable ATA
+        scripts/config --enable SATA_AHCI
+        scripts/config --enable DEVTMPFS
+        scripts/config --enable DEVTMPFS_MOUNT
+        scripts/config --enable NET
+        scripts/config --enable INET
+        scripts/config --enable PACKET
+        scripts/config --enable TTY
+        scripts/config --enable VT
+        scripts/config --enable UNIX98_PTYS
+        scripts/config --enable PROC_FS
+        scripts/config --enable SYSFS
+        scripts/config --enable TMPFS
+        scripts/config --enable BINFMT_ELF
+      fi
+
+      local fs_type
+      fs_type="$(state_get FS_TYPE ext4)"
+      case "${fs_type}" in
+        ext4)     scripts/config --enable EXT4_FS ;;
+        btrfs)    scripts/config --enable BTRFS_FS ;;
+        xfs)      scripts/config --enable XFS_FS ;;
+        f2fs)     scripts/config --enable F2FS_FS ;;
+        exfat)    scripts/config --enable EXFAT_FS ;;
+        bcachefs) scripts/config --enable BCACHEFS_FS ;;
+      esac
+
+      # Feature flags
+      for feat in "${selected_features[@]}"; do
+        case "${feat}" in
+          nvidia-support)
+            scripts/config --module DRM_NOUVEAU
+            scripts/config --enable DRM_NOUVEAU_BACKLIGHT
+            ;;
+          amd-support)
+            scripts/config --module DRM_AMDGPU
+            scripts/config --enable DRM_AMDGPU_SI
+            scripts/config --enable DRM_AMDGPU_CIK
+            ;;
+        esac
+      done
+
+      # Resolve all symbol dependencies
+      yes "" | make oldconfig
       ;;
+
     menuconfig)
       make allnoconfig
       scripts/config --enable 64BIT
@@ -53,7 +105,7 @@ configure() {
       scripts/config --enable VIRTIO
       scripts/config --enable VIRTIO_MENU
       scripts/config --enable VIRTIO_PCI
-      scripts/config --module VIRTIO_BLK
+      scripts/config --enable VIRTIO_BLK
       scripts/config --module USB_HID
       scripts/config --enable BLK_DEV_SD
       scripts/config --enable BLK_DEV_NVME
@@ -68,6 +120,7 @@ configure() {
       scripts/config --enable PROC_FS
       scripts/config --enable SYSFS
       scripts/config --enable DEVTMPFS
+      scripts/config --enable DEVTMPFS_MOUNT
       scripts/config --enable TMPFS
       scripts/config --enable BINFMT_ELF
       scripts/config --enable PRINTK
@@ -110,7 +163,7 @@ configure() {
       scripts/config --enable VIRTIO
       scripts/config --enable VIRTIO_MENU
       scripts/config --enable VIRTIO_PCI
-      scripts/config --module VIRTIO_BLK
+      scripts/config --enable VIRTIO_BLK
       scripts/config --module USB_HID
       scripts/config --enable BLK_DEV_SD
       scripts/config --enable BLK_DEV_NVME
@@ -163,21 +216,11 @@ configure() {
         exfat) scripts/config --enable EXFAT_FS ;;
       esac
 
-      if [[ "${depth}" == "menuconfig" ]]; then
-        make menuconfig
-      fi
-
-      scripts/config --enable BLK_DEV
-      scripts/config --enable VIRTIO
-      scripts/config --enable VIRTIO_MENU
-      scripts/config --enable VIRTIO_PCI
-      scripts/config --module VIRTIO_BLK
-      scripts/config --module USB_HID
-
       yes "" | make oldconfig
       ;;
   esac
 }
+
 build() {
   cd "${BUILD_DIR}/src"
   make -j"${ARTIX_MAKEFLAGS}"
