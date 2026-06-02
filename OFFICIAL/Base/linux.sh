@@ -136,6 +136,7 @@ configure() {
       fi
 
       make menuconfig
+      yes "" | make oldconfig
       ;;
 
     *)
