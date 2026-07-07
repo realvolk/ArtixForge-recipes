@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 pkgname=linux-custom
 _major=7
-pkgver=7.0.10
+pkgver=7.1.2
 pkgrel=1
 desc="Linux kernel built from source (Artix base configuration)"
 url="https://gitea.artixlinux.org/packages/linux"
@@ -128,16 +128,20 @@ configure() {
       yes "" | make oldconfig
       ;;
 
-    menuconfig)
-      if [[ -f "${POWERUSER_DIR}/lib/kconfig.bash" ]]; then
-        source "${POWERUSER_DIR}/lib/kconfig.bash"
-        apply_basic_config
-        apply_advanced_config
-      fi
-
-      make menuconfig
-      yes "" | make oldconfig
-      ;;
+      menuconfig)
+        if [[ -f /tmp/artix-kconfig-edited ]]; then
+          log_info "Kernel config was edited in TUI — skipping make menuconfig"
+          rm -f /tmp/artix-kconfig-edited
+        else
+          if [[ -f "${POWERUSER_DIR}/lib/kconfig.bash" ]]; then
+            source "${POWERUSER_DIR}/lib/kconfig.bash"
+            apply_basic_config
+            apply_advanced_config
+          fi
+          make menuconfig
+        fi
+        yes "" | make oldconfig
+        ;;
 
     *)
       if [[ -f "${POWERUSER_DIR}/lib/kconfig.bash" ]]; then
